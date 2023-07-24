@@ -1,0 +1,122 @@
+name: "Terraform Core"
+
+on:
+  repository_dispatch:
+    types: [account_crawler, ingest, entity, application, host, aws_ecs, k8s]
+
+permissions:
+  contents: read
+
+jobs:
+
+  # Run the account crawler workflow
+  account_crawler:
+    if: github.event.action == 'account_crawler'
+    name: Account Crawler
+    uses: ./.github/workflows/account_crawler.yml
+    with:
+      newrelic_account_id: ${{ github.event.client_payload.newrelic_account_id }}
+      newrelic_api_key: ${{ github.event.client_payload.newrelic_api_key }}
+      newrelic_region: ${{ github.event.client_payload.newrelic_region }}
+      terraform_destroy: ${{ github.event.client_payload.terraform_destroy }}
+    secrets:
+      REPO_GITHUB_PAT: ${{ secrets.REPO_GITHUB_PAT }}
+
+  # Run the data ingest workflow
+  ingest:
+    if: github.event.action == 'ingest'
+    name: Data Ingest
+    uses: ./.github/workflows/ingest.yml
+    with:
+      newrelic_account_id: ${{ github.event.client_payload.newrelic_account_id }}
+      newrelic_api_key: ${{ github.event.client_payload.newrelic_api_key }}
+      newrelic_region: ${{ github.event.client_payload.newrelic_region }}
+      terraform_destroy: ${{ github.event.client_payload.terraform_destroy }}
+    secrets:
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+
+    # Run the entity workflow
+  entity:
+    if: github.event.action == 'entity'
+    name: Entity Relations
+    uses: ./.github/workflows/entity.yml
+    with:
+      newrelic_account_id: ${{ github.event.client_payload.newrelic_account_id }}
+      newrelic_api_key: ${{ github.event.client_payload.newrelic_api_key }}
+      newrelic_region: ${{ github.event.client_payload.newrelic_region }}
+      account_entity_mapping: ${{ github.event.client_payload.account_entity_mapping }}
+      terraform_destroy: ${{ github.event.client_payload.terraform_destroy }}
+    secrets:
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+
+  # Run the application workflow
+  application:
+    if: github.event.action == 'application'
+    name: Application
+    uses: ./.github/workflows/application.yml
+    with:
+      newrelic_account_id: ${{ github.event.client_payload.newrelic_account_id }}
+      newrelic_api_key: ${{ github.event.client_payload.newrelic_api_key }}
+      newrelic_region: ${{ github.event.client_payload.newrelic_region }}
+      app_relation_map: ${{ github.event.client_payload.app_relation_map }}
+      terraform_destroy: ${{ github.event.client_payload.terraform_destroy }}
+    secrets:
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+
+  # Run the host workflow
+  host:
+    if: github.event.action == 'host'
+    name: Host
+    uses: ./.github/workflows/host.yml
+    with:
+      newrelic_account_id: ${{ github.event.client_payload.newrelic_account_id }}
+      newrelic_api_key: ${{ github.event.client_payload.newrelic_api_key }}
+      newrelic_region: ${{ github.event.client_payload.newrelic_region }}
+      terraform_destroy: ${{ github.event.client_payload.terraform_destroy }}
+    secrets:
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+
+  # Run the AWS ECS workflow
+  aws_ecs:
+    if: github.event.action == 'aws_ecs'
+    name: AWS ECS
+    uses: ./.github/workflows/aws_ecs.yml
+    with:
+      newrelic_account_id: ${{ github.event.client_payload.newrelic_account_id }}
+      newrelic_api_key: ${{ github.event.client_payload.newrelic_api_key }}
+      newrelic_region: ${{ github.event.client_payload.newrelic_region }}
+      terraform_destroy: ${{ github.event.client_payload.terraform_destroy }}
+    secrets:
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}      
+
+  # Run the K8s workflow
+  k8s:
+    if: github.event.action == 'k8s'
+    name: K8s
+    uses: ./.github/workflows/k8s.yml
+    with:
+      newrelic_account_id: ${{ github.event.client_payload.newrelic_account_id }}
+      newrelic_api_key: ${{ github.event.client_payload.newrelic_api_key }}
+      newrelic_region: ${{ github.event.client_payload.newrelic_region }}
+      cluster_name: ${{ github.event.client_payload.cluster_name }}
+      terraform_destroy: ${{ github.event.client_payload.terraform_destroy }}
+    secrets:
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}

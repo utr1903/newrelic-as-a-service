@@ -1,0 +1,63 @@
+name: "Account Crawler"
+
+on:
+  workflow_call:
+    inputs:
+      newrelic_account_id:
+        required: true
+        type: string
+      newrelic_api_key:
+        required: true
+        type: string
+      newrelic_region:
+        required: true
+        type: string
+      terraform_destroy:
+        required: false
+        default: false
+        type: boolean
+    secrets:
+      REPO_GITHUB_PAT:
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  account-crawler:
+    name: "Account Crawler"
+    runs-on: ubuntu-latest
+
+    env:
+      GITHUB_REPO_PAT: ${{ secrets.REPO_GITHUB_PAT }}
+      GITHUB_WORKFLOW_URL: https://api.github.com/repos/utr1903/newrelic-as-a-service/dispatches
+      NEWRELIC_ACCOUNT_ID: ${{ inputs.newrelic_account_id }}
+      NEWRELIC_API_KEY: ${{ inputs.newrelic_api_key }}
+      NEWRELIC_REGION: ${{ inputs.newrelic_region }}
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      # Checkout the repository to the GitHub Actions runner
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      # Run account crawler
+      - name: Run account crawler
+        run: |
+          python ./apps/01_account_crawler.py
