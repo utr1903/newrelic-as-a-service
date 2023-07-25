@@ -2,7 +2,7 @@ name: "Terraform Core"
 
 on:
   repository_dispatch:
-    types: [account_crawler, ingest, entity, application, host, aws_ecs, k8s]
+    types: [account_crawler, ingest, application, host, aws_ecs]
 
 permissions:
   contents: read
@@ -31,23 +31,6 @@ jobs:
       newrelic_account_id: ${{ github.event.client_payload.newrelic_account_id }}
       newrelic_api_key: ${{ github.event.client_payload.newrelic_api_key }}
       newrelic_region: ${{ github.event.client_payload.newrelic_region }}
-      terraform_destroy: ${{ github.event.client_payload.terraform_destroy }}
-    secrets:
-      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-
-    # Run the entity workflow
-  entity:
-    if: github.event.action == 'entity'
-    name: Entity Relations
-    uses: ./.github/workflows/entity.yml
-    with:
-      newrelic_account_id: ${{ github.event.client_payload.newrelic_account_id }}
-      newrelic_api_key: ${{ github.event.client_payload.newrelic_api_key }}
-      newrelic_region: ${{ github.event.client_payload.newrelic_region }}
-      account_entity_mapping: ${{ github.event.client_payload.account_entity_mapping }}
       terraform_destroy: ${{ github.event.client_payload.terraform_destroy }}
     secrets:
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -103,20 +86,3 @@ jobs:
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}      
-
-  # Run the K8s workflow
-  k8s:
-    if: github.event.action == 'k8s'
-    name: K8s
-    uses: ./.github/workflows/k8s.yml
-    with:
-      newrelic_account_id: ${{ github.event.client_payload.newrelic_account_id }}
-      newrelic_api_key: ${{ github.event.client_payload.newrelic_api_key }}
-      newrelic_region: ${{ github.event.client_payload.newrelic_region }}
-      cluster_name: ${{ github.event.client_payload.cluster_name }}
-      terraform_destroy: ${{ github.event.client_payload.terraform_destroy }}
-    secrets:
-      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
