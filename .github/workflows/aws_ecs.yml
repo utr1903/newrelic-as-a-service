@@ -64,6 +64,7 @@ jobs:
       - name: Initialize Terraform
         run: |
           terraform -chdir=./terraform/aws/ecs init \
+          -upgrade \
           -backend-config="resource_group_name=${{ secrets.AZURE_RESOURCE_GROUP_NAME }}" \
           -backend-config="storage_account_name=${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }}" \
           -backend-config="container_name=${{ secrets.AZURE_BLOB_CONTAINER_NAME }}" \
