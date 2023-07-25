@@ -83,6 +83,7 @@ if [[ $flagDestroy != "true" ]]; then
 
   # Initialize Terraform
   terraform -chdir=../terraform/application init \
+    -upgrade \
     -backend-config="resource_group_name=$resourceGroupName" \
     -backend-config="storage_account_name=$storageAccountName" \
     -backend-config="container_name=$blobContainerName" \

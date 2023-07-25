@@ -6,11 +6,11 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~>3.41.0"
+      version = "~>3.66.0"
     }
     newrelic = {
       source  = "newrelic/newrelic"
-      version = "~>3.15.0"
+      version = "~>3.25.2"
     }
   }
 
