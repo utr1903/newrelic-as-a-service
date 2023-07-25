@@ -1,10 +1,17 @@
 import commons.parser as parser
+import ingest.ingest as ingest
 import application.apm as apm
 import host.host as host
 
 # Parse environment variables
 def parseEnvironmentVariables():
   return parser.parseEnvironmentVariables()
+
+# Trigger workflows for ingest Terraform deployment
+def triggerIngestWorkflow(
+    globalVariables
+  ):
+  ingest.triggerIngestWorkflow(globalVariables)
 
 # Trigger workflows for APM Terraform deployment
 def triggerApmWorkflow(
@@ -22,6 +29,9 @@ def main():
 
   # Parse environment variables
   globalVariables = parseEnvironmentVariables()
+
+  # Trigger Terraform workflow for ingest
+  triggerIngestWorkflow(globalVariables)
 
   # Trigger Terraform workflow for APM
   triggerApmWorkflow(globalVariables)
