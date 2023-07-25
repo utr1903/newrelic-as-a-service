@@ -68,7 +68,7 @@ def triggerApmWorkflow(
     print('Triggering APM workflow...')
 
     payload = {
-      'event_type': 'apm',
+      'event_type': 'application',
       'client_payload': {
         'newrelic_account_id': globalVariables[parser.NEWRELIC_ACCOUNT_ID],
         'newrelic_api_key': globalVariables[parser.NEWRELIC_API_KEY],
